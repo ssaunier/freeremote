@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Freebox HD Remote</title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript" src="freeremote.js"></script>
+	<style type="text/css">
+	  ul#channels li:hover {
+	    cursor: pointer;
+	    text-decoration: underline;
+	    color: red;
+	  }
+	</style>
+</head>
+<body>
+
+<fieldset>
+  Code: 
+  <input type="text" id="code" value="72923481" />
+  Box:
+  <input type="text" id="box" value="hd1" />
+</fieldset>
+
+<fieldset>
+  Touche: 
+  <input type="text" id="key" value="power" /> 
+  <button id="click">Click</button>
+  <button id="push">Push</button>
+</fieldset>
+
+<ul id="channels"></ul>
+
+<script type="text/javascript">
+// Create remote object.
+var remote = new freeremote({ code: $('input#code').val() });
+
+// When changing the code in the input box, update the remote instance.
+$('input#code').change(function(e) {
+  remote.setCode($(e.target).val());
+});
+
+// When changing the box in the input box, update the remote instance.
+$('input#box').change(function(e) {
+  remote.setBox($(e.target).val());
+});
+
+// Bind click button
+$('button#click').click(function(e) {
+  remote.click($('input#key').val())
+});
+
+// Bind push button
+$('button#push').click(function(e) {
+  remote.push($('input#key').val())
+});
+
+// Display channel list.
+setTimeout(function(){
+var channels = remote.getAvailableChannels();
+for (var i = 0; i < channels.length; ++i) {
+  var channelId = channels[i].id;
+  var listItem = $('<li></li>')
+                    .html(channels[i].name + ' (' + channelId +')')
+                    .data('channelId', channelId)
+                    .click(function(e) {
+                      remote.setChannel($(e.target).data('channelId'));
+                    });
+  $('ul#channels').append(listItem);
+}
+}, 1);
+</script>
+
+</body>
+</html>
